@@ -1628,8 +1628,7 @@ PROTOCOL_RESULT	Protocol_PIPE_BUF_STATUS(void)
 
 	GLOBAL_BufResultToUSBLatency = MACRO_GetTickCountRet;
 	GLOBAL_ResBufferCompilationLatency = MACRO_GetTickCountRet;
-	
-	
+		
 	// Ok, return the last result as well
 	if (JobPipe__pipe_get_buf_job_results_count() == 0)
 	{
@@ -1681,9 +1680,7 @@ PROTOCOL_RESULT	Protocol_PIPE_BUF_STATUS(void)
 		{
 			JobPipe__pipe_skip_buf_job_results(iTotalResultsToTake);									 
 		}			
-	}		
-
-
+	}
 	
 	// Also say how long it has taken
 	GLOBAL_BufResultToUSBLatency = MACRO_GetTickCountRet - GLOBAL_BufResultToUSBLatency;

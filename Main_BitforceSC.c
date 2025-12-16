@@ -277,7 +277,6 @@ void MCU_Main_Loop()
 					__expected_singlestage_multijob_length = sz_cmd[2] + 1 + 2; // +1 because this length does not include the stream-length byte itself
 																				// +2 because it doesn't include the initial 'WX' either
 				}
-								
 				
 				// Check if 3-byte packet is done
 				if ((i_count == 3) && (bInterceptingChainForwardReq == FALSE) && 
@@ -345,9 +344,7 @@ void MCU_Main_Loop()
 		else 
 		{
 			/* We listen to PCI Express */
-			
-			
-			
+			// TODO: To be implemented for PCIe device
 		}		
 		
 		// Are we a single-stage job-issue command?
@@ -452,7 +449,6 @@ void MCU_Main_Loop()
 					if (sz_cmd[1] == PROTOCOL_REQ_TEST_COMMAND)			Protocol_Test_Command();
 					if (sz_cmd[1] == PROTOCOL_REQ_PRESENCE_DETECTION)   Protocol_xlink_presence_detection();
 				}
-
 				
 				// Once we reach here, our procedure has run and we're back to standby...
 			}
@@ -460,6 +456,7 @@ void MCU_Main_Loop()
 		else // We are using PCI Express
 		{
 			// Take appropriate action on PCI Express Side
+			// TODO: To be implemented for PCIe device
 		}		
 	}
 }
