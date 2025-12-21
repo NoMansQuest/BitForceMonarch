@@ -5,11 +5,7 @@
  *  Author: NASSER GHOSEIRI
  */ 
 
-// WARNING:
-// ------------------------------------------------------------------------------------------
-// In this simulation, all used variables MUST BE UNSIGNED INT. A normal INT will become negative
-// after rotation (this last bit of int indicates it's positivity or negativity)
-// ------------------------------------------------------------------------------------------
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -20,9 +16,7 @@ unsigned int H0_INITIAL[8] = {
   0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
  };
  
-// Initialize table of round constants
-// (first 32 bits of the fractional parts
-// of the cube roots of the first 64 primes 2..311):
+
 unsigned int K[64] = {
   0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
   0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
@@ -41,11 +35,7 @@ unsigned int K[64] = {
   0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
   0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
  };
-// The first three DWORDs are our data (12Bytes) in correct order
-// The MCU Must be able to atleast set these three DWORDs.
-// The optimal situation is where MCU can access the first sixteen DWORs
-// (W[0] to W[15]).
-// IMPORTANT: Note: This W0 is shared among ALL SLICES on the same chip
+
 unsigned int W0[64] = {
   0x00000000, 0x00000000, 0x00000000, 0x00000000,
   0x00000000, 0x00000000, 0x00000000, 0x00000000,
@@ -133,8 +123,23 @@ void expandWord(){
 }
 
 /* ----------------------------------------------------------- */
-void SHA2_Core(unsigned int inA,   unsigned int inB,   unsigned int inC,   unsigned int inD,   unsigned int inE,   unsigned int inF,   unsigned int inG,   unsigned int inH,
-			   unsigned int* outA, unsigned int* outB, unsigned int* outC, unsigned int* outD, unsigned int* outE, unsigned int* outF, unsigned int* outG, unsigned int* outH)
+void SHA2_Core(
+    unsigned int inA,
+    unsigned int inB,
+    unsigned int inC,
+    unsigned int inD,
+    unsigned int inE,
+    unsigned int inF,
+    unsigned int inG,
+    unsigned int inH,
+		unsigned int* outA,
+    unsigned int* outB,
+    unsigned int* outC,
+    unsigned int* outD,
+    unsigned int* outE,
+    unsigned int* outF,
+    unsigned int* outG,
+    unsigned int* outH)
 {
   unsigned int i;
   unsigned int maj, ch, s0, s1, t1, t2;
@@ -168,9 +173,6 @@ void SHA2_Core(unsigned int inA,   unsigned int inB,   unsigned int inC,   unsig
 	a = t1 + t2;
   }
 
-  // NOTICE: OutA = InA + A (which is the initially given A value to the function) + a (the calculated a)
-  // This '+=' before was only '=' and *outA was not initialized to then given 'InA'
-  // Note: This addition happens at the end of the 64th round. It must be applied to BOTH ENGINES!
   *outA += a;
   *outB += b;
   *outC += c;
@@ -179,34 +181,8 @@ void SHA2_Core(unsigned int inA,   unsigned int inB,   unsigned int inC,   unsig
   *outF += f;
   *outG += g;
   *outH += h;
-
 }
 
-/* ----------------------------------------------------------------------- */
-/*
-  h0 := h0 + a
-  h1 := h1 + b
-  h2 := h2 + c
-  h3 := h3 + d
-  h4 := h4 + e
-  h5 := h5 + f
-  h6 := h6 + g
-  h7 := h7 + h
-Produce the final hash value (big-endian):
-hash = {h0, h1 , h2 , h3 , h4 , h5 , h6 , h7}
-*/
-/* ----------------------------------------------------------- */
-/* Examples:
- SHA256("")
- 0x e3b0c442 98fc1c14 9afbf4c8 996fb924 27ae41e4 649b934c a495991b 7852b855
-SHA256("The quick brown fox jumps over the lazy dog")
-0x d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592
-SHA256("The quick brown fox jumps over the lazy dog.")
-0x ef537f25c895bfa782526529a9b63d97aa631564d5d789c2b765448c8635fb6c
-*/
-// -----------------------------------------------------------------------
-
-// -----------------------------------------------------------------------
 int SHA256_Digest(char* szData, int iDataLen, int* retValsAtoH)
 {
 	
