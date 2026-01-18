@@ -1,6 +1,8 @@
 /*
  * JohnChengASIC.c
  * Created: 24/03/2013 17:28:45
+ * 
+ * NOTE: Included as reference, not used in operation.
  */ 
 
 #include "JohnChengASIC.h"

@@ -2,13 +2,14 @@
 AVR32 Firmware for Butterfly Labs Bitforce Monarch double-SHA processors
 
 * Author: Nasser Ghoseiri
-* Date: `17-Dec-2025`
+* Readme Date: `17-Dec-2025`
+* Project Date: `01-Aug-2014`
 
 ---
 
 ### Introduction
 
-BitForce Monarch was the last of BitForce series (doulbe-SHA hashing accelerators) released by Butterfly Labs based on Global Foundry's 28nm node back in 2013 to 2014. The system was composed of two high-speed double-SHA ASIC processor, one AVR32 microprocessor and one Xilinx (now AMD) Spartan-6 FPGA.
+BitForce Monarch was the last of BitForce series (double-SHA hashing accelerators) released by Butterfly Labs based on Global Foundry's 28nm node back in 2013 to 2014. The system was composed of two high-speed double-SHA ASIC processor, one AVR32 microprocessor and one Xilinx (now AMD) Spartan-6 FPGA.
 
 The FPGA fulfilled the following roles:
 * Connect the AVR32 chip to USB bus (via FTDI)
@@ -102,20 +103,50 @@ This module contains heavily optimized (assembly level) AVR32 code to rapidly co
 
 ### The 'FAN_Subsystem'
 
+This module is in charge of processing fan / ventilation related requests. Is essentially updates the ventilation power of the board, which is adjusted according to workload and temperature sensor readings.
 
+### The 'FPGA_Subsystem'
 
+This subsystem manages PCI-Express interaction with the FPGA. The functionality is rather simple as no DMA was supported for the PCI-Express connection given the low bandwidth needed for operation.
 
+### The 'Generic_Module'
 
+This module acts as an anti-corruption layer, which abstracts away high-level functionality. The high-level functions then perform micro-controller-specific operation according to the micro-controller in use.
 
+### The 'Host Interaction Protocols'
 
+The host communicates the BitForce Monarch through a set of predefined calls as mentioned above. Actual implementation of those calls are inside this module.
 
+### The 'Internal Microkernel'
 
+The job of handling internal house-keeping of the board (reading ASICs, checking temperature, adjusting fans, etc.) are all performed inside the kernel implemented in this module. As the design is based on a cooperative kernel, the **Microkernel_Spin** function in this module is best called as often as reasonably possible. 
 
+The current design calls this once for every time the communication-channel is checked and incoming request processed (if any). For more information, please consult the `Main_BitforcSC.c` file.
 
+### The 'Job Pipe Module'
 
+This module is a repository for issued jobs and results. Each time a job is queued, it is placed inside this repository, which it then issues to the ASICs and have its results collected and kept (assuming no cancellation or purging takes place during this journey).
 
+### The 'John Cheng ASIC'
 
+This module was provided and designed by the ASIC chip manufacturers. It is kept for documentation reasons only, and not used in the codebase.
 
+### The 'MCU Initialization' 
 
+Provides an anti‑corruption layer that maps the generic MCU initialization call to the appropriate MCU‑specific implementation.
 
+### The 'Pipe Processing Kernel'
 
+The actual task of issuing jobs to ASIC chips from the `Job Pipe Module` falls under the responsibility of this module. The **PipeKernel_Spin** function is invoked as part of `Internal Microkernel` operation.
+
+### The 'SHA256 Engine'
+
+As its name suggests, this module calculates standard SHA-256. 
+
+### The 'USB Protocol Module'
+
+This module handles USB communication via the FTDI chip on board, which operates in 'HighSpeed USB FIFO mode'.
+
+### The 'std_defs'
+
+This module contains global definitions used everywhere.

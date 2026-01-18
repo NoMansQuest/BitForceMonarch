@@ -14,7 +14,7 @@
 #include "A2D_Module.h"
 #include "ASIC_Engine.h"
 #include "HostInteractionProtocols.h"
-#include "HighLevel_Operations.h"
+#include "InternalMicrokernel.h"
 #include "FAN_Subsystem.h"
 #include "AVR32_OptimizedTemplates.h"
 #include "PipeProcessingKernel.h"
